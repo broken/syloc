@@ -17,7 +17,7 @@ def syloc(filepath):
 @bottle.route('/components/<filepath:path>')
 def components(filepath):
   return static_file(filepath, root='bower_components')
-  
+
 
 # Define an handler for 404 errors.
 @bottle.error(404)

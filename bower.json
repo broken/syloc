@@ -1,11 +1,19 @@
 {
   "name": "syloc",
   "homepage": "https://github.com/broken/syloc",
-  "authors": [ "syloc@robertneale.com" ],
+  "authors": [
+    "syloc@robertneale.com"
+  ],
   "description": "Appengine website for wifey",
   "private": true,
   "ignore": [
     "**/.*",
     "bower_components"
-  ]
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "firebase-element": "GoogleWebComponents/firebase-element#^1.0.12",
+    "iron-elements": "PolymerElements/iron-elements#^1.0.9",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.7"
+  }
 }
