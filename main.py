@@ -9,6 +9,14 @@ bottle = Bottle()
 @bottle.route('/')
 def main(name=''):
   return static_file('main.html', root='views')
+
+@bottle.route('/components/syloc/<filepath:path>')
+def syloc(filepath):
+  return static_file(filepath, root='components/syloc')
+
+@bottle.route('/components/<filepath:path>')
+def components(filepath):
+  return static_file(filepath, root='bower_components')
   
 
 # Define an handler for 404 errors.

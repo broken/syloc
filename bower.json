@@ -1,0 +1,11 @@
+{
+  "name": "syloc",
+  "homepage": "https://github.com/broken/syloc",
+  "authors": [ "syloc@robertneale.com" ],
+  "description": "Appengine website for wifey",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ]
+}
