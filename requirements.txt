@@ -3,4 +3,9 @@
 # Run 'pip install -r requirements.txt -t lib/' to install these dependencies
 # in this project's lib/ directory.  The `lib` directory is added to `sys.path`
 # by `appengine_config.py`.
+#
+# Note that gdata installs atom which had another identical atom folder inside
+# which needed to be deleted manually.
 bottle==0.12.9
+gdata==2.0.18
+mako==1.0.4

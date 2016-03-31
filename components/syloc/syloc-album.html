@@ -1,0 +1,29 @@
+<link href="../polymer/polymer.html" rel="import">
+
+<link href="../iron-ajax/iron-ajax.html" rel="import">
+
+
+<dom-module id="syloc-album">
+  <link href="../syloc/theme-melon.css" type="css" rel="import">
+  <style is="custom-style">
+    :host {
+      height: 100%;
+      display: flex;
+    }
+  </style>
+  <template>
+    <template is="dom-repeat" items="[[photos]]" as="photo">
+      <img src="[[photo.url]]">
+    </template>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-album',
+    properties: {
+      photos: Array,
+    },
+  });
+</script>
