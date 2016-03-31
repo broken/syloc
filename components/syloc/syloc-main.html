@@ -1,5 +1,6 @@
 <link href="../polymer/polymer.html" rel="import">
 
+<link href="../iron-a11y-keys/iron-a11y-keys.html" rel="import">
 <link href="../paper-input/paper-input.html" rel="import">
 
 
@@ -19,8 +20,10 @@
     }
   </style>
   <template>
+    <iron-a11y-keys target="[[a11yKeysTarget]]" keys="enter"
+                    on-keys-pressed="onEnter"></iron-a11y-keys>
     <section hero class="input-box">
-      <paper-input label="Key"></paper-input>
+      <paper-input label="Key" id="input" value="{{key::input}}"></paper-input>
     </section>
   </template>
 </dom-module>
@@ -30,6 +33,17 @@
   Polymer({
     is: 'syloc-main',
     properties: {
+      key: {
+        type: String,
+        notify: true,
+      },
+      a11yKeysTarget: {
+        type: Object,
+        value: function() { return this.$.input; }
+      },
     },
+    onEnter: function() {
+      window.location.href = '/a/' + this.key;
+    }
   });
 </script>
