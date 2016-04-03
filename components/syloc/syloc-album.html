@@ -11,23 +11,37 @@
       height: 100%;
     }
     .grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: flex-start;
+      margin: 0 auto;
+      -webkit-column-count: 3;
+      -webkit-column-gap: 10px;
+        width: calc(288px * 3 + 10px * 2);
+    }
+    @media screen and (max-width: 1000px) {
+      .grid {
+        -webkit-column-count: 2;
+        width: calc(288px * 2 + 10px);
+      }
+    }
+    @media screen and (max-width: 700px) {
+      .grid {
+        -webkit-column-count: 1;
+        width: calc(288px * 1);
+      }
     }
     .grid-item {
-      width: 300px;
-      margin: 10px;
+      line-height: 0;
+      margin-bottom: 10px;
+      display: inline-block;
+      width: 288px;
     }
     img {
-      width: 300px;
+      width: 100%;
     }
   </style>
   <template>
-    <firebase-collection location="https://syloc.firebaseio.com/albums/[[key]]/photos" data="{{photos}}"></firebase-collection>
+    <firebase-collection location="https://syloc.firebaseio.com/albums/[[key]]/thumbnails" data="{{thumbnails}}"></firebase-collection>
     <div class="grid">
-      <template is="dom-repeat" items="[[photos]]" as="photo">
+      <template is="dom-repeat" items="[[thumbnails]]" as="photo">
         <div class="grid-item"><img src="[[photo.value]]"></div>
       </template>
     </div>
@@ -40,7 +54,7 @@
     is: 'syloc-album',
     properties: {
       key: String,
-      photos: Array,
+      thumbnails: Array,
     },
   });
 </script>

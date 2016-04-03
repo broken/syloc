@@ -4,7 +4,7 @@
 <dom-module id="syloc-album-item">
   <link href="../syloc/theme-melon.css" type="css" rel="import">
   <template>
-      <div>[[album.key]]</div>
+      <div>[[albumName]]</div>
   </template>
 </dom-module>
 
@@ -13,7 +13,7 @@
   Polymer({
     is: 'syloc-album-item',
     properties: {
-      album: Object,
+      albumName: String,
     },
   });
 </script>

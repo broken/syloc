@@ -10,11 +10,11 @@
   <link href="../syloc/theme-melon.css" type="css" rel="import">
   <template>
     <firebase-collection
-        location="https://syloc.firebaseio.com/albums"
+        location="https://syloc.firebaseio.com/albumKeys"
         data="{{albums}}"></firebase-collection>
     <syloc-album-form></syloc-album-form>
     <template is="dom-repeat" items="[[albums]]" as="album">
-      <syloc-album-item album="[[album]]"></syloc-album-item>
+      <syloc-album-item album-name="[[album.__firebaseKey__]]"></syloc-album-item>
     </template>
   </template>
 </dom-module>

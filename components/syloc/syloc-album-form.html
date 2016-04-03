@@ -41,7 +41,7 @@
       title: String,
       albumXml: String,
     },
-    _parsePhotosXml: function(photos={}) {
+    _parsePhotosXml: function(album) {
       /* global DOMParser */
       var parser = new DOMParser();
       var xmlDoc = parser.parseFromString(this.albumXml, 'text/xml');
@@ -52,9 +52,15 @@
         var url = media.getElementsByTagName('content')[0].getAttribute('url');
         var name = media.getElementsByTagName('title')[0].textContent;
         name = name.replace(/[\\.#$/[\]]/g, '-');
-        photos[name] = url;
+        album.photos[name] = url;
+        var thumbs = media.getElementsByTagName('thumbnail');
+        for (var j = 0, width = 0; j < thumbs.length; ++j) {
+          var thumb = thumbs[j];
+          if (thumb.getAttribute('width') > width) {
+            album.thumbnails[name] = thumb.getAttribute('url');
+          }
+        }
       }
-      return photos;
     },
     _onClick: function(event) {
       /* global Firebase */
@@ -69,12 +75,12 @@
               window.console.log('Authenticated successfully with payload: ', authData);
               ref.once('value',
                   function(albumsSnapshot) {
-                    var album = { 'photos': {} };
+                    var album = { 'photos': {}, 'thumbnails': {} };
                     if (albumsSnapshot.hasChild(this.key)) {
                       albumsSnapshot.child(this.key).ref().remove();
                       album = albumsSnapshot.child(this.key).val();
                     }
-                    this._parsePhotosXml(album.photos);
+                    this._parsePhotosXml(album);
                     ref.child(this.key).set(album,
                         function(err) {
                           if (err) {
