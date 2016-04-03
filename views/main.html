@@ -4,7 +4,6 @@
     <title>Nicole Sykes Locations</title>
     <style type="text/css">
       html, body {
-        background-size: cover;
         height: 100%;
         margin: 0;
         padding: 0;
@@ -13,22 +12,10 @@
   </head>
   <body>
     <script src="/components/webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link href="/components/firebase-element/firebase-document.html" rel="import">
     <link href="/components/syloc/theme-melon.html" rel="import">
     <link href="/components/syloc/syloc-main.html" rel="import">
     <template is="dom-bind">
       <syloc-main></syloc-main>
     </template>
-    <script>
-      /* global Firebase */
-      var index = Math.random() * 1 | 0;
-      var ref = new Firebase('https://syloc.firebaseio.com/main/backgrounds/' + index);
-      ref.on("value",
-          function(data) {
-            document.body.style.backgroundImage="url('" + data.val() + "')";
-          }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-          });
-    </script>
   </body>
 </html>
