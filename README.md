@@ -1,5 +1,11 @@
 # syloc
 
+# Custom firebase-element
+Temporarily installing HEAD of firebase-element
+bower install GoogleWebComponents/firebase-element#0b1f9b9508dc30389fdbf9d93205cd179761ff07
+until https://github.com/GoogleWebComponents/firebase-element/pull/109 is live
+
+
 # Save an image in firebase (from console)
 function toDataUrl(url, callback, outputFormat){
     var img = new Image();

@@ -16,6 +16,10 @@ bottle = Bottle()
 def main():
   return static_file('main.html', root='views')
 
+@bottle.route('/a/<key>')
+def album(key=''):
+  return template('views/album.html', key=key)
+
 @bottle.route('/master')
 def admin():
   return static_file('admin.html', root='views')
@@ -27,26 +31,6 @@ def syloc(filepath):
 @bottle.route('/components/<filepath:path>')
 def components(filepath):
   return static_file(filepath, root='bower_components')
-
-@bottle.route('/a/<key>')
-def album(key=''):
-  # todo: get album id from key
-  username = '117561345629918325267'
-  album_id = key  # 5880506174047638001
-  gd_client = service.PhotosService()
-  photo_feed = gd_client.GetFeed('/data/feed/api/user/%s/albumid/%s?kind=photo' % (username, album_id))
-  #photos = [photo_entry.media.content[0].url for photo_entry in photo_feed.entry]
-  photos = []
-  for photo_entry in photo_feed.entry:
-    photo = { 'url': photo_entry.media.content[0].url,
-               'id': photo_entry.gphoto_id.text,
-          'summary': photo_entry.media.description.text }
-    # Not adding thumbnail for now. Can have many differentiated by height
-    if photo_entry.geo.Point.pos.text:
-      photo['lat'] = photo_entry.geo.latitude()
-      photo['long'] = photo_entry.geo.longitude()
-    photos.append(photo)
-  return template('views/album.html', photos=json.dumps(photos))
 
 
 # Define an handler for 404 errors.

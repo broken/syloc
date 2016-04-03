@@ -26,7 +26,6 @@
     <!-- end favicon -->
     <style type="text/css">
       html, body {
-        background-size: cover;
         height: 100%;
         margin: 0;
         padding: 0;
@@ -38,11 +37,7 @@
     <link href="/components/syloc/theme-melon.html" rel="import">
     <link href="/components/syloc/syloc-album.html" rel="import">
     <template is="dom-bind">
-      <syloc-album photos="{{photos}}"></syloc-album>
+      <syloc-album key="${key}"></syloc-album>
     </template>
-    <script>
-      var scope = document.querySelector('template[is="dom-bind"]');
-      scope.photos = JSON.parse('${photos}');
-    </script>
   </body>
 </html>
