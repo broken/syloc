@@ -1,0 +1,30 @@
+<link href="../polymer/polymer.html" rel="import">
+
+<link href="../firebase-element/firebase-collection.html" rel="import">
+
+<link href="../syloc/syloc-album-form.html" rel="import">
+<link href="../syloc/syloc-album-item.html" rel="import">
+
+
+<dom-module id="syloc-admin">
+  <link href="../syloc/theme-melon.css" type="css" rel="import">
+  <template>
+    <firebase-collection
+        location="https://syloc.firebaseio.com/albums"
+        data="{{albums}}"></firebase-collection>
+    <syloc-album-form></syloc-album-form>
+    <template is="dom-repeat" items="[[albums]]" as="album">
+      <syloc-album-item album="[[album]]"></syloc-album-item>
+    </template>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-admin',
+    properties: {
+      albums: Array,
+    },
+  });
+</script>

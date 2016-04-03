@@ -1,0 +1,19 @@
+<link href="../polymer/polymer.html" rel="import">
+
+
+<dom-module id="syloc-album-item">
+  <link href="../syloc/theme-melon.css" type="css" rel="import">
+  <template>
+      <div>[[album.key]]</div>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-album-item',
+    properties: {
+      album: Object,
+    },
+  });
+</script>

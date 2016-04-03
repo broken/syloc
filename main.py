@@ -16,6 +16,10 @@ bottle = Bottle()
 def main():
   return static_file('main.html', root='views')
 
+@bottle.route('/master')
+def admin():
+  return static_file('admin.html', root='views')
+
 @bottle.route('/components/syloc/<filepath:path>')
 def syloc(filepath):
   return static_file(filepath, root='components/syloc')
