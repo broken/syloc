@@ -1,0 +1,37 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../firebase-element/firebase-collection.html">
+<link rel="import" href="../paper-material/paper-material.html">
+
+<link rel="import" href="../syloc/syloc-album-list-item.html">
+
+
+<dom-module id="syloc-album-list">
+  <template>
+    <style>
+      #container {
+        padding: 20px;
+        margin: 20px auto;
+        width: 360px;
+      }
+    </style>
+    <firebase-collection
+        location="https://syloc.firebaseio.com/albumKeys" log
+        data="{{albums}}"></firebase-collection>
+    <paper-material id="container">
+      <template is="dom-repeat" items="[[albums]]" as="album">
+        <syloc-album-list-item album-name="[[album.__firebaseKey__]]" album-id="[[album.value]]"></syloc-album-list-item>
+      </template>
+    </paper-material>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-album-list',
+    properties: {
+      albums: Array,
+    },
+  });
+</script>

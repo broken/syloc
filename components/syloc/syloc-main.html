@@ -6,23 +6,22 @@
 
 
 <dom-module id="syloc-main">
-  <link href="../syloc/theme-melon.css" type="css" rel="import">
-  <style is="custom-style">
-    :host {
-      background-position: center;
-      background-size: cover;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    .input-box {
-      padding: 12px;
-      border-radius: 16px;
-    }
-  </style>
   <template>
+    <style>
+      :host {
+        background-position: center;
+        background-size: cover;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .input-box {
+        padding: 12px;
+        border-radius: 16px;
+      }
+    </style>
     <iron-a11y-keys target="[[a11yKeysTarget]]" keys="enter"
                     on-keys-pressed="onEnter"></iron-a11y-keys>
     <firebase-document location="[[firebaseUrl]]"

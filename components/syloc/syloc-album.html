@@ -5,40 +5,39 @@
 
 
 <dom-module id="syloc-album">
-  <link href="../syloc/theme-melon.css" type="css" rel="import">
-  <style is="custom-style">
-    :host {
-      height: 100%;
-    }
-    .grid {
-      margin: 0 auto;
-      -webkit-column-count: 3;
-      -webkit-column-gap: 10px;
-        width: calc(288px * 3 + 10px * 2);
-    }
-    @media screen and (max-width: 1000px) {
-      .grid {
-        -webkit-column-count: 2;
-        width: calc(288px * 2 + 10px);
-      }
-    }
-    @media screen and (max-width: 700px) {
-      .grid {
-        -webkit-column-count: 1;
-        width: calc(288px * 1);
-      }
-    }
-    .grid-item {
-      line-height: 0;
-      margin-bottom: 10px;
-      display: inline-block;
-      width: 288px;
-    }
-    img {
-      width: 100%;
-    }
-  </style>
   <template>
+    <style>
+      :host {
+        height: 100%;
+      }
+      .grid {
+        margin: 0 auto;
+        -webkit-column-count: 3;
+        -webkit-column-gap: 10px;
+          width: calc(288px * 3 + 10px * 2);
+      }
+      @media screen and (max-width: 1000px) {
+        .grid {
+          -webkit-column-count: 2;
+          width: calc(288px * 2 + 10px);
+        }
+      }
+      @media screen and (max-width: 700px) {
+        .grid {
+          -webkit-column-count: 1;
+          width: calc(288px * 1);
+        }
+      }
+      .grid-item {
+        line-height: 0;
+        margin-bottom: 10px;
+        display: inline-block;
+        width: 288px;
+      }
+      img {
+        width: 100%;
+      }
+    </style>
     <firebase-collection location="https://syloc.firebaseio.com/albums/[[key]]/thumbnails" data="{{thumbnails}}"></firebase-collection>
     <div class="grid">
       <template is="dom-repeat" items="[[thumbnails]]" as="photo">

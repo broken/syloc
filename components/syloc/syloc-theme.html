@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-styles/color.html">
+<style is="custom-style">
+  :root {
+    --primary-background-color: #303030;
+    --secondary-background-color: var(--paper-grey-800);
+    --tertiary-background-color: var(--paper-grey-900);  /* custom */
+    --primary-text-color: #ffffff;
+    --secondary-text-color: rgba(255,255,255,0.7);
+    --tertiary-text-color: rgba(255,255,255,0.5);  /* custom */
+    --disabled-text-color: var(--tertiary-text-color);
+    --hint-text-color: var(--tertiary-text-color);  /* custom */
+    --icon-color: var(--tertiary-text-color);  /* custom */
+    --divider-color: rgba(255,255,255,0.12);
+  
+    --error-color: var(--paper-red-a400);
+    --primary-color: var(--paper-purple-500);
+    --light-primary-color: var(--paper-purple-300);
+    --dark-primary-color: var(--paper-purple-700);
+    --accent-color: var(--paper-green-a200);
+    --light-accent-color: var(--paper-green-a100);
+    --dark-accent-color: var(--paper-green-a400);
+  }
+  
+  body {
+    background-color: var(--primary-background-color);
+  }
+  
+  :root {
+    color: var(--primary-text-color);
+  }
+  
+  :root paper-material {
+    background-color: var(--secondary-background-color);
+  }
+</style>
