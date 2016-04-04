@@ -1,0 +1,115 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../firebase-element/firebase-auth.html">
+<link rel="import" href="../paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../paper-dialog-behavior/paper-dialog-shared-styles.html">
+<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../paper-input/paper-input.html">
+
+
+<dom-module id="syloc-album-add">
+  <style>
+    paper-dialog-scrollable {
+      width: 300px;
+      height: 300px;
+    }
+  </style>
+  <template>
+    <style include="paper-dialog-shared-styles"></style>
+    <firebase-auth
+        id="firebase"
+        location="https://syloc.firebaseio.com/albumKeys/[[key]]"
+        provider="google"
+        ref="{{firebaseRef}}"
+        on-login="_loginSuccess"
+        on-error="_loginFailure"></firebase-auth>
+    <div>
+      <h2>New Album</h2>
+      <paper-dialog-scrollable>
+        <paper-input label="Key" value="{{key}}"></paper-input>
+        <paper-input label="Title" value="{{title}}"></paper-input>
+        <div>
+          Navigate to
+          <a href="https://picasaweb.google.com/data/feed/api/user/[[userId]]?kind=album" target="_blank">link</a>,
+          and copy & paste the output into the text input below.
+        </div>
+        <paper-input label="Albums XML" value="{{albumsXml}}"></paper-input>
+        <!--<template is="dom-repeat" items="[[albumEntries]]" as="entry">-->
+        <!--  <div>[[entry.name]] - [[entry.id]]</div>-->
+        <!--</template>-->
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-dismiss on-click="_clearValues">Cancel</paper-button>
+        <paper-button dialog-confirm on-click="_firebaseLogin" disabled="[[_isAlbumFound(title, albumEntries)]]">Accept</paper-button>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-album-add',
+    behaviors: [
+      Polymer.PaperDialogBehavior,
+    ],
+    properties: {
+      key: String,
+      title: String,
+      albumsXml: String,
+      albumEntries: {
+        type: Array,
+        computed: '_parseAlbumsXml(albumsXml)',
+      },
+    },
+    _clearValues: function() {
+      this.key = '';
+      this.title = '';
+      this.albumsXml = '';
+    },
+    _firebaseLogin: function() {
+      this.$.firebase.login();
+    },
+    _loginSuccess: function(e) {
+      var album = this._findAlbum(this.title, this.albumEntries);
+      this.firebaseRef.set(album.id);
+      this.firebaseRef.logout();
+      this._clearValues();
+    },
+    _loginFailure: function(e) {
+      window.console.warn('Login to firebase failed.');
+      window.console.warn(e.detail);
+    },
+    _parseAlbumsXml: function(xml) {
+      var albumEntries = [];
+      if (!xml) return albumEntries;
+      /* global DOMParser */
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(xml, 'text/xml');
+      var entries = xmlDoc.getElementsByTagName('entry');
+      for (var idx = 0; idx < entries.length; ++idx) {
+        var entry = {};
+        var uri = entries[idx].getElementsByTagName('id')[0].textContent;
+        entry['id'] = uri.substr(uri.lastIndexOf('/') + 1)
+        entry['name'] = entries[idx].getElementsByTagName('title')[0].textContent.toLowerCase();
+        albumEntries.push(entry);
+      }
+      return albumEntries;
+    },
+    _findAlbum: function(title, albumEntries) {
+      if (!title || !albumEntries || !albumEntries.length) return null;
+      var lcTitle = title.toLowerCase();
+      var entry = null;
+      for (var i=0; i < albumEntries.length; ++i) {
+        if (albumEntries[i].name.indexOf(lcTitle) > 0) {
+          if (!!entry) return null;
+          entry = albumEntries[i];
+        }
+      }
+      return entry;
+    },
+    _isAlbumFound: function(title, albumEntries) {
+      return !this._findAlbum(title, albumEntries);
+    },
+  });
+</script>

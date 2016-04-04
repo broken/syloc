@@ -1,8 +1,14 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="../firebase-element/firebase-collection.html">
-<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-input/paper-textarea.html">
 
+<link rel="import" href="../syloc/syloc-album-add.html">
 <link rel="import" href="../syloc/syloc-album-list-item.html">
 
 
@@ -10,19 +16,29 @@
   <template>
     <style>
       #container {
-        padding: 20px;
         margin: 20px auto;
-        width: 360px;
+        width: 90%;
+        max-width: 600px;
+      }
+      .title {
+        background-color: var(--tertiary-background-color);
+      }
+      paper-fab {
+        float: right;
       }
     </style>
     <firebase-collection
-        location="https://syloc.firebaseio.com/albumKeys" log
+        location="https://syloc.firebaseio.com/albumKeys"
         data="{{albums}}"></firebase-collection>
-    <paper-material id="container">
+    <syloc-constants user-id="{{userId}}"></syloc-constants>
+    <div id="container">
+      <div class="title">Albums</div>
       <template is="dom-repeat" items="[[albums]]" as="album">
         <syloc-album-list-item album-name="[[album.__firebaseKey__]]" album-id="[[album.value]]"></syloc-album-list-item>
       </template>
-    </paper-material>
+      <paper-fab icon="add" on-click="_toggleAddAlbumDialog"></paper-fab>
+    </div>
+    <syloc-album-add album-entry="{{newAlbum}}" id="addAlbumDialog"></syloc-album-add>
   </template>
 </dom-module>
 
@@ -32,6 +48,26 @@
     is: 'syloc-album-list',
     properties: {
       albums: Array,
+      newAlbum: Object,
+    },
+    _parseAlbumsXml: function(xml) {
+      var albumEntries = [];
+      if (!xml) return albumEntries;
+      /* global DOMParser */
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(xml, 'text/xml');
+      var entries = xmlDoc.getElementsByTagName('entry');
+      for (var idx = 0; idx < entries.length; ++idx) {
+        var entry = {};
+        var uri = entries[idx].getElementsByTagName('id')[0].textContent;
+        entry['id'] = uri.substr(uri.lastIndexOf('/') + 1)
+        entry['name'] = entries[idx].getElementsByTagName('title')[0].textContent;
+        albumEntries.push(entry);
+      }
+      return albumEntries;
+    },
+    _toggleAddAlbumDialog: function(e, detail, sender) {
+      this.$.addAlbumDialog.toggle();
     },
   });
 </script>

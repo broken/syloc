@@ -1,18 +1,28 @@
-<link href="../polymer/polymer.html" rel="import">
+<link rel="import" href="../polymer/polymer.html">
 
 
-<dom-module id="syloc-album-item">
+<dom-module id="syloc-album-list-item">
   <template>
-      <div>[[albumName]]</div>
+    <style>
+      #album-item {
+        border-bottom-color: var(--divider-color);
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+      }
+    </style>
+    <div id="album-item">
+      [[albumName]]
+    </div>
   </template>
 </dom-module>
 
 <script>
   /* global Polymer */
   Polymer({
-    is: 'syloc-album-item',
+    is: 'syloc-album-list-item',
     properties: {
       albumName: String,
+      albumId: String,
     },
   });
 </script>
