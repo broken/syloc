@@ -18,3 +18,13 @@ handlers:
 - url: .*
   script: main.bottle
   secure: always
+
+skip_files:
+# defaults
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.py[co]$
+- ^(.*/)?.*/RCS/.*$
+- ^(.*/)?\..*$
+# prevent default theme from overriding mine
+- ^(bower_components/paper-styles/default-theme.html)$
