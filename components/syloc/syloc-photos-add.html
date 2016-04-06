@@ -1,0 +1,97 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../firebase-element/firebase-auth.html">
+<link rel="import" href="../paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../paper-dialog-behavior/paper-dialog-shared-styles.html">
+<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../paper-input/paper-input.html">
+
+<link rel="import" href="../syloc/syloc-constants.html">
+
+
+<dom-module id="syloc-photos-add">
+  <style>
+    paper-dialog-scrollable {
+      width: 300px;
+      height: 300px;
+    }
+  </style>
+  <template>
+    <style include="paper-dialog-shared-styles"></style>
+    <syloc-constants user-id="{{_userId}}"></syloc-constants>
+    <firebase-auth
+        id="firebase"
+        location="https://syloc.firebaseio.com/albums/[[albumKey]]"
+        provider="google"
+        ref="{{_firebaseRef}}"></firebase-auth>
+    <div>
+      <h2>Update [[albumKey]]</h2>
+      <paper-dialog-scrollable>
+        <div>
+          Navigate to
+          <a href="https://picasaweb.google.com/data/feed/api/user/[[_userId]]/albumid/[[albumId]]?imgmax=d" target="_blank">link</a>,
+          and copy & paste the output into the text input below.
+        </div>
+        <paper-input label="Album XML" value="{{_albumXml}}"></paper-input>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm on-click="_firebaseLogin">Accept</paper-button>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-photos-add',
+    behaviors: [
+      Polymer.PaperDialogBehavior,
+    ],
+    properties: {
+      albumKey: String,
+      albumId: String,
+      _albumXml: String,
+      _firebaseRef: Object,
+    },
+    ready: function() {
+      this._authCallback = this._authCallback.bind(this);
+    },
+    _firebaseLogin: function() {
+      this._firebaseRef.onAuth(this._authCallback);
+      this.$.firebase.login();
+    },
+    _authCallback: function(authData) {
+      if (authData) {
+        var album = { 'photos': {}, 'thumbnails': {} };
+        this._parsePhotosXml(this._albumXml, album);
+        this._firebaseRef.set(album);
+        this._firebaseRef.offAuth(this._authCallback);
+        this.$.firebase.logout();
+      }
+    },
+    _parsePhotosXml: function(xml, album) {
+      if (!xml) return;
+      /* global DOMParser */
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(xml, 'text/xml');
+      var entries = xmlDoc.getElementsByTagName('entry');
+      for (var idx = 0; idx < entries.length; ++idx) {
+        var entry = entries[idx];
+        var media = entry.getElementsByTagName('group')[0];
+        var url = media.getElementsByTagName('content')[0].getAttribute('url');
+        var name = media.getElementsByTagName('title')[0].textContent;
+        name = name.replace(/[\\.#$/[\]]/g, '-');
+        album.photos[name] = url;
+        var thumbs = media.getElementsByTagName('thumbnail');
+        for (var j = 0, width = 0; j < thumbs.length; ++j) {
+          var thumb = thumbs[j];
+          if (thumb.getAttribute('width') > width) {
+            album.thumbnails[name] = thumb.getAttribute('url');
+          }
+        }
+      }
+    },
+  });
+</script>

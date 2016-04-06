@@ -30,15 +30,14 @@
     <firebase-collection
         location="https://syloc.firebaseio.com/albumKeys"
         data="{{albums}}"></firebase-collection>
-    <syloc-constants user-id="{{userId}}"></syloc-constants>
     <div id="container">
       <div class="title">Albums</div>
       <template is="dom-repeat" items="[[albums]]" as="album">
-        <syloc-album-list-item album-name="[[album.__firebaseKey__]]" album-id="[[album.value]]"></syloc-album-list-item>
+        <syloc-album-list-item album-key="[[album.__firebaseKey__]]" album-id="[[album.value]]"></syloc-album-list-item>
       </template>
       <paper-fab icon="add" on-click="_toggleAddAlbumDialog"></paper-fab>
     </div>
-    <syloc-album-add album-entry="{{newAlbum}}" id="addAlbumDialog"></syloc-album-add>
+    <syloc-album-add id="addAlbumDialog"></syloc-album-add>
   </template>
 </dom-module>
 
@@ -48,7 +47,6 @@
     is: 'syloc-album-list',
     properties: {
       albums: Array,
-      newAlbum: Object,
     },
     _parseAlbumsXml: function(xml) {
       var albumEntries = [];

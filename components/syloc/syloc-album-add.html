@@ -6,6 +6,8 @@
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../paper-input/paper-input.html">
 
+<link rel="import" href="../syloc/syloc-constants.html">
+
 
 <dom-module id="syloc-album-add">
   <style>
@@ -16,13 +18,12 @@
   </style>
   <template>
     <style include="paper-dialog-shared-styles"></style>
+    <syloc-constants user-id="{{userId}}"></syloc-constants>
     <firebase-auth
         id="firebase"
         location="https://syloc.firebaseio.com/albumKeys/[[key]]"
         provider="google"
-        ref="{{firebaseRef}}"
-        on-login="_loginSuccess"
-        on-error="_loginFailure"></firebase-auth>
+        ref="{{_firebaseRef}}"></firebase-auth>
     <div>
       <h2>New Album</h2>
       <paper-dialog-scrollable>
@@ -61,6 +62,10 @@
         type: Array,
         computed: '_parseAlbumsXml(albumsXml)',
       },
+      _firebaseRef: Object,
+    },
+    ready: function() {
+      this._authCallback = this._authCallback.bind(this);
     },
     _clearValues: function() {
       this.key = '';
@@ -68,13 +73,17 @@
       this.albumsXml = '';
     },
     _firebaseLogin: function() {
+      this._firebaseRef.onAuth(this._authCallback);
       this.$.firebase.login();
     },
-    _loginSuccess: function(e) {
-      var album = this._findAlbum(this.title, this.albumEntries);
-      this.firebaseRef.set(album.id);
-      this.firebaseRef.logout();
-      this._clearValues();
+    _authCallback: function(authData) {
+      if (authData) {
+        var album = this._findAlbum(this.title, this.albumEntries);
+        this._firebaseRef.set(album.id);
+        this._firebaseRef.offAuth(this._authCallback);
+        this.$.firebase.logout();
+        this._clearValues();
+      }
     },
     _loginFailure: function(e) {
       window.console.warn('Login to firebase failed.');

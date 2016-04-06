@@ -1,5 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+
+<link rel="import" href="../syloc/syloc-photos-add.html">
+
 
 <dom-module id="syloc-album-list-item">
   <template>
@@ -8,11 +13,17 @@
         border-bottom-color: var(--divider-color);
         border-bottom-style: solid;
         border-bottom-width: 1px;
+        display: flex;
+      }
+      #album-item div {
+        margin-right: 20px;
       }
     </style>
     <div id="album-item">
-      [[albumName]]
+      <div>[[albumKey]]</div>
+      <div><iron-icon icon="image:add-a-photo" on-click="_toggleAddPhotosDialog"></iron-icon></div>
     </div>
+    <syloc-photos-add id="addPhotosDialog" album-key="[[albumKey]]" album-id="[[albumId]]"></syloc-photos-add>
   </template>
 </dom-module>
 
@@ -21,8 +32,11 @@
   Polymer({
     is: 'syloc-album-list-item',
     properties: {
-      albumName: String,
+      albumKey: String,
       albumId: String,
+    },
+    _toggleAddPhotosDialog: function(e, detail, sender) {
+      this.$.addPhotosDialog.toggle();
     },
   });
 </script>
