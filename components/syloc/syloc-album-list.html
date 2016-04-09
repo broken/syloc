@@ -10,6 +10,7 @@
 
 <link rel="import" href="../syloc/syloc-album-add.html">
 <link rel="import" href="../syloc/syloc-album-list-item.html">
+<link rel="import" href="../syloc/syloc-constants.html">
 
 
 <dom-module id="syloc-album-list">
@@ -28,12 +29,13 @@
       }
     </style>
     <firebase-collection
-        location="https://syloc.firebaseio.com/albumKeys"
+        location="https://syloc.firebaseio.com/key"
         data="{{albums}}"></firebase-collection>
+    <syloc-constants empty-token={{_emptyToken}}></syloc-constants>
     <div id="container">
       <div class="title">Albums</div>
-      <template is="dom-repeat" items="[[albums]]" as="album">
-        <syloc-album-list-item album-key="[[album.__firebaseKey__]]" album-id="[[album.value]]"></syloc-album-list-item>
+      <template is="dom-repeat" items="[[albums]]" as="album" filter="_isNotEmptyToken">
+        <syloc-album-list-item key="[[album.__firebaseKey__]]" album-id="[[album.value]]"></syloc-album-list-item>
       </template>
       <paper-fab icon="add" on-click="_toggleAddAlbumDialog"></paper-fab>
     </div>
@@ -47,6 +49,7 @@
     is: 'syloc-album-list',
     properties: {
       albums: Array,
+      _emptyToken: String,
     },
     _parseAlbumsXml: function(xml) {
       var albumEntries = [];
@@ -66,6 +69,9 @@
     },
     _toggleAddAlbumDialog: function(e, detail, sender) {
       this.$.addAlbumDialog.toggle();
+    },
+    _isNotEmptyToken: function(album) {
+      return album.__firebaseKey__ !== this._emptyToken;
     },
   });
 </script>

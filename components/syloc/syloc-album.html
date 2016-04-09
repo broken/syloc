@@ -38,7 +38,7 @@
         width: 100%;
       }
     </style>
-    <firebase-collection location="https://syloc.firebaseio.com/albums/[[key]]/thumbnails" data="{{thumbnails}}"></firebase-collection>
+    <firebase-collection location="https://syloc.firebaseio.com/album/[[key]]/thumbnail/s288" data="{{thumbnails}}"></firebase-collection>
     <div class="grid">
       <template is="dom-repeat" items="[[thumbnails]]" as="photo">
         <div class="grid-item"><img src="[[photo.value]]"></div>

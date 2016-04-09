@@ -21,9 +21,14 @@
     <syloc-constants user-id="{{_userId}}"></syloc-constants>
     <firebase-auth
         id="firebase"
-        location="https://syloc.firebaseio.com/albums/[[albumKey]]"
+        location="https://syloc.firebaseio.com/album/[[albumKey]]"
         provider="google"
-        ref="{{_firebaseRef}}"></firebase-auth>
+        ref="{{_ref}}"></firebase-auth>
+    <firebase-auth
+        id="firebaseGroup"
+        location="https://syloc.firebaseio.com/group/[[albumKey]]"
+        provider="google"
+        ref="{{_refGroup}}"></firebase-auth>
     <div>
       <h2>Update [[albumKey]]</h2>
       <paper-dialog-scrollable>
@@ -53,21 +58,25 @@
       albumKey: String,
       albumId: String,
       _albumXml: String,
-      _firebaseRef: Object,
+      _ref: Object,
+      _refGroup: Object,
     },
     ready: function() {
       this._authCallback = this._authCallback.bind(this);
     },
     _firebaseLogin: function() {
-      this._firebaseRef.onAuth(this._authCallback);
+      this._ref.onAuth(this._authCallback);
       this.$.firebase.login();
     },
     _authCallback: function(authData) {
       if (authData) {
-        var album = { 'photos': {}, 'thumbnails': {} };
+        this.$.firebaseGroup.login({ 'token': authData.token });
+        var album = { 'photo': {}, 'thumbnail': { 's72': {}, 's144': {}, 's288': {} } };
         this._parsePhotosXml(this._albumXml, album);
-        this._firebaseRef.set(album);
-        this._firebaseRef.offAuth(this._authCallback);
+        this._ref.set(album);
+        var groups = album.thumbnail.s72;
+        this._refGroup.set(groups);  // could there be a race condition here if we have not logged in on time from above?
+        this._ref.offAuth(this._authCallback);
         this.$.firebase.logout();
       }
     },
@@ -83,13 +92,13 @@
         var url = media.getElementsByTagName('content')[0].getAttribute('url');
         var name = media.getElementsByTagName('title')[0].textContent;
         name = name.replace(/[\\.#$/[\]]/g, '-');
-        album.photos[name] = url;
+        album.photo[name] = url;
         var thumbs = media.getElementsByTagName('thumbnail');
         for (var j = 0, width = 0; j < thumbs.length; ++j) {
           var thumb = thumbs[j];
-          if (thumb.getAttribute('width') > width) {
-            album.thumbnails[name] = thumb.getAttribute('url');
-          }
+          var width = 's' + thumb.getAttribute('width');
+          if (!album.thumbnail[width]) album.thumbnail[width] = {};  // jic
+          album.thumbnail[width][name] = thumb.getAttribute('url');
         }
       }
     },

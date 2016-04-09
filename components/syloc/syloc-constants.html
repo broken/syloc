@@ -26,7 +26,13 @@
       },
       adminAlbumPath: {
         type: String,
-        value: function() { return this.adminPath + this.albumPath; },
+        value: '/master/a/',  // adminPath + albumPath
+        readOnly: true,
+        notify: true,
+      },
+      emptyToken: {
+        type: String,
+        value: '__empty__',
         readOnly: true,
         notify: true,
       },

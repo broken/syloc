@@ -21,7 +21,7 @@
     <syloc-constants user-id="{{userId}}"></syloc-constants>
     <firebase-auth
         id="firebase"
-        location="https://syloc.firebaseio.com/albumKeys/[[key]]"
+        location="https://syloc.firebaseio.com/key/[[key]]"
         provider="google"
         ref="{{_firebaseRef}}"></firebase-auth>
     <div>
@@ -35,9 +35,6 @@
           and copy & paste the output into the text input below.
         </div>
         <paper-input label="Albums XML" value="{{albumsXml}}"></paper-input>
-        <!--<template is="dom-repeat" items="[[albumEntries]]" as="entry">-->
-        <!--  <div>[[entry.name]] - [[entry.id]]</div>-->
-        <!--</template>-->
       </paper-dialog-scrollable>
       <div class="buttons">
         <paper-button dialog-dismiss on-click="_clearValues">Cancel</paper-button>

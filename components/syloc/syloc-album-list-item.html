@@ -22,11 +22,11 @@
     </style>
     <syloc-constants admin-album-path="{{_editAlbumPath}}"></syloc-constants>
     <div id="album-item">
-      <div>[[albumKey]]</div>
+      <div>[[key]]</div>
       <div><iron-icon icon="image:add-a-photo" on-click="_toggleAddPhotosDialog"></iron-icon></div>
       <div><iron-icon icon="folder" on-click="_navigateToEditAlbum"></iron-icon></div>
     </div>
-    <syloc-photos-add id="addPhotosDialog" album-key="[[albumKey]]" album-id="[[albumId]]"></syloc-photos-add>
+    <syloc-photos-add id="addPhotosDialog" album-key="[[key]]" album-id="[[albumId]]"></syloc-photos-add>
   </template>
 </dom-module>
 
@@ -35,7 +35,7 @@
   Polymer({
     is: 'syloc-album-list-item',
     properties: {
-      albumKey: String,
+      key: String,
       albumId: String,
     },
     _toggleAddPhotosDialog: function(e, detail, sender) {
