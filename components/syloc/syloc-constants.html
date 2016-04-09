@@ -12,6 +12,24 @@
         readOnly: true,
         notify: true,
       },
+      albumPath: {
+        type: String,
+        value: '/a/',
+        readOnly: true,
+        notify: true,
+      },
+      adminPath: {
+        type: String,
+        value: '/master',
+        readOnly: true,
+        notify: true,
+      },
+      adminAlbumPath: {
+        type: String,
+        value: function() { return this.adminPath + this.albumPath; },
+        readOnly: true,
+        notify: true,
+      },
     },
   });
 </script>

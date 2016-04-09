@@ -1,0 +1,65 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../syloc/syloc-sortable-photo.html">
+
+
+<dom-module id="syloc-sortable-group">
+  <template>
+    <style>
+      #container {
+        padding: 12px;
+        border-color: var(--divider-color);
+        border-width: 1px;
+        border-style: solid;
+        background-color: var(--secondary-background-color);
+        border-radius: 8px;
+        margin: 12px;
+      }
+      .title {
+        margin-bottom: 8px;
+      }
+      .group {
+        display: flex;
+      }
+    </style>
+    <div id="container">
+      <div class="title">[[key]]</div>
+      <div class="group">
+        <template is="dom-repeat" items="[[_groups]]">
+          <div><syloc-sortable-group key="[[item]]" value="[[_valueOfKey(item)]]"></syloc-sortable-group></div>
+        </template>
+        <template is="dom-repeat" items="[[_photos]]">
+          <div><syloc-sortable-photo key="[[item]]" value="[[_valueOfKey(item)]]"></syloc-sortable-photo></div>
+        </template>
+      </div>
+		</div>
+	</div>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-sortable-group',
+    properties: {
+      key: String,
+      value: {
+        type: Object,
+        observer: '_onValueChanged',
+      },
+      _groups: Array,
+      _photos: Array,
+    },
+    _onValueChanged: function() {
+      this.render();
+    },
+    _valueOfKey: function(key) {
+      return this.value[key];
+    },
+    render: function() {
+      var data = this.value;
+      this._groups = Object.keys(data).filter(key => data[key] instanceof Object);
+      this._photos = Object.keys(data).filter(key => typeof data[key] === 'string');
+    },
+  });
+</script>

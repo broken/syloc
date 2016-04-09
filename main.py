@@ -20,6 +20,10 @@ def main():
 def album(key=''):
   return template('views/album.html', key=key)
 
+@bottle.route('/master/a/<key>')
+def group(key=''):
+  return template('views/group.html', key=key)
+
 @bottle.route('/master')
 def admin():
   return static_file('admin.html', root='views')

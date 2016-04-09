@@ -3,6 +3,7 @@
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/image-icons.html">
 
+<link rel="import" href="../syloc/syloc-constants.html">
 <link rel="import" href="../syloc/syloc-photos-add.html">
 
 
@@ -19,9 +20,11 @@
         margin-right: 20px;
       }
     </style>
+    <syloc-constants admin-album-path="{{_editAlbumPath}}"></syloc-constants>
     <div id="album-item">
       <div>[[albumKey]]</div>
       <div><iron-icon icon="image:add-a-photo" on-click="_toggleAddPhotosDialog"></iron-icon></div>
+      <div><iron-icon icon="folder" on-click="_navigateToEditAlbum"></iron-icon></div>
     </div>
     <syloc-photos-add id="addPhotosDialog" album-key="[[albumKey]]" album-id="[[albumId]]"></syloc-photos-add>
   </template>
@@ -37,6 +40,9 @@
     },
     _toggleAddPhotosDialog: function(e, detail, sender) {
       this.$.addPhotosDialog.toggle();
+    },
+    _navigateToEditAlbum: function() {
+      window.location.href = this._editAlbumPath + this.key;
     },
   });
 </script>

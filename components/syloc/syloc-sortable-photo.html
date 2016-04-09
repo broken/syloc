@@ -1,0 +1,37 @@
+<link rel="import" href="../polymer/polymer.html">
+
+
+<dom-module id="syloc-sortable-photo">
+  <template>
+    <style>
+      div {
+        margin: 3px;
+      }
+    </style>
+    <div><img src="[[value]]" on-dragstart="_dragStart" id="img"/></div>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-sortable-photo',
+    properties: {
+      key: String,
+      value: String,
+    },
+    _dragStart: function(e) {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('key', this.key);
+      e.dataTransfer.setData('value', this.value);
+      this.fire('parent', this._findParentGroup());
+    },
+    _findParentGroup: function() {
+      var el = this.parentElement;
+      while (el) {
+        if (el.tagName === 'SYLOC-SORTABLE-GROUP') return el;
+        el = el.parentElement;
+      }
+    },
+  });
+</script>
