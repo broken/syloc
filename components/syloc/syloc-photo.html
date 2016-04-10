@@ -1,17 +1,36 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+
 
 <dom-module id="syloc-photo">
   <template>
     <style>
-      div {
+      img {
+        max-width: 100%;
+      }
+      #tnContainer {
         line-height: 0;
         margin-bottom: 10px;
         display: inline-block;
         width: 288px;
       }
+      #photoContainer {
+        position: absolute;
+        display: none;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: black;
+        align-items: center;
+      }
     </style>
-    <div><img src="[[_src]]"/></div>
+    <div on-tap="show" id="tnContainer"><img src="[[_tnSrc]]" id="tnImg"/></div>
+    <div on-tap="hide" id="photoContainer"><img src="[[_photoSrc]]" id="photoImg"/></div>
   </template>
 </dom-module>
 
@@ -19,18 +38,68 @@
   /* global Polymer */
   Polymer({
     is: 'syloc-photo',
+    behaviors: [
+      Polymer.NeonAnimationRunnerBehavior
+    ],
+    listeners: {
+      'click': '_onClick',
+      'neon-animation-finish': '_neonAnimationFinish',
+    },
     properties: {
       key: String,
       value: String,
       album: Object,
-      _src: {
+      _tnSrc: {
         type: String,
-        computed: '_imgSrc(key, album)',
+        computed: '_computeThumbnailSrc(key, album)',
+      },
+      _photoSrc: {
+        type: String,
+        computed: '_computePhotoSrc(key, album)',
+      },
+      opened: Boolean,
+      animationConfig: {
+        value: function() {
+          return {
+            'open': [
+              {
+                name: 'scale-up-animation',
+                node: this.$.photoImg,
+              },
+              {
+                name: 'fade-in-animation',
+                node: this.$.photoContainer,
+              },
+            ],
+            'close': {
+              name: 'fade-out-animation',
+              node: this.$.photoContainer,
+            },
+          };
+        },
       },
     },
-    _imgSrc: function(key, album) {
+    _computeThumbnailSrc: function(key, album) {
       if (!key || !album) return '';
       return album.thumbnail.s288[key];
+    },
+    _computePhotoSrc: function(key, album) {
+      if (!key || !album) return '';
+      return album.photo[key];
+    },
+    show: function() {
+      this.opened = true;
+      this.$.photoContainer.style.display = 'flex';
+      this.cancelAnimation();
+      this.playAnimation('open');
+    },
+    hide: function() {
+      this.opened = false;
+      this.cancelAnimation();
+      this.playAnimation('close');
+    },
+    _neonAnimationFinish: function() {
+      if (!this.opened) this.$.photoContainer.style.display = 'none';
     },
   });
 </script>
