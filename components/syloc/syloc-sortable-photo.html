@@ -4,6 +4,10 @@
 <dom-module id="syloc-sortable-photo">
   <template>
     <style>
+      :host {
+        -webkit-user-select: none;
+        user-select: none;
+      }
       div {
         margin: 3px;
       }
@@ -21,10 +25,11 @@
       value: String,
     },
     _dragStart: function(e) {
+      this.fire('parent', this._findParentGroup());
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('key', this.key);
       e.dataTransfer.setData('value', this.value);
-      this.fire('parent', this._findParentGroup());
+      e.dataTransfer.setData('type', 'photo');
     },
     _findParentGroup: function() {
       var el = this.parentElement;

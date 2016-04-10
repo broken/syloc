@@ -4,8 +4,10 @@
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-input/paper-input.html">
 
+<link rel="import" href="../syloc/syloc-constants.html">
 <link rel="import" href="../syloc/syloc-sortable-group.html">
 
 
@@ -26,19 +28,20 @@
         location="https://syloc.firebaseio.com/group/[[key]]"
         provider="google"
         ref="{{_ref}}"></firebase-auth>
+    <syloc-constants admin-path="{{_adminPath}}"></syloc-constants>
+    <paper-icon-button icon="arrow-back" on-tap="_navigateToAdminPage"></paper-icon-button>
     <div id="container">
       <syloc-sortable-group key="[[key]]" value="[[_data]]" on-drop="_drop" on-dragover="_allowDrop" on-parent="_updateParent" id="grp"></syloc-sortable-group>
       <paper-fab icon="add" on-click="_toggleAddGroupDialog"></paper-fab>
 		</div>
-	</div>
-	<paper-dialog id="addGroupDialog">
-    <h2>Add Group</h2>
-    <paper-input label="Name" value="{{_newGroupName}}"></paper-input>
-    <div class="buttons">
-      <paper-button dialog-dismiss>Cancel</paper-button>
-      <paper-button dialog-confirm on-click="_createGroup">Accept</paper-button>
-    </div>
-  </paper-dialog>
+  	<paper-dialog id="addGroupDialog">
+      <h2>Add Group</h2>
+      <paper-input label="Name" value="{{_newGroupName}}"></paper-input>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm on-click="_createGroup">Accept</paper-button>
+      </div>
+    </paper-dialog>
   </template>
 </dom-module>
 
@@ -73,8 +76,13 @@
         var el = normalizedEvent.path[i];
         if (el.tagName === 'SYLOC-SORTABLE-GROUP') {
           console.info('new group is: ', el.key);
-          console.info('pic was: ', e.dataTransfer.getData('key'));
-          this._movePhoto(this._data, e.dataTransfer.getData('key'), e.dataTransfer.getData('value'), el.key, this.key);
+          console.info('item was: ', e.dataTransfer.getData('key'));
+          if (el.key === e.dataTransfer.getData('key')) return false;
+          var value = e.dataTransfer.getData('value');
+          if (e.dataTransfer.getData('type') === 'group') {
+            value = JSON.parse(e.dataTransfer.getData('value'));
+          }
+          this._movePhoto(this._data, e.dataTransfer.getData('key'), value, el.key, this.key);
           el.render();
           this._dragParent.render();
           break;
@@ -101,6 +109,9 @@
       this._data[this._newGroupName] = {};
       this._newGroupName = '';
       this.$.grp.render();
+    },
+    _navigateToAdminPage: function() {
+      window.location.href = this._adminPath;
     },
   });
 </script>
