@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer.html">
+
+
+<dom-module id="syloc-photo">
+  <template>
+    <style>
+      div {
+        line-height: 0;
+        margin-bottom: 10px;
+        display: inline-block;
+        width: 288px;
+      }
+    </style>
+    <div><img src="[[_src]]"/></div>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-photo',
+    properties: {
+      key: String,
+      value: String,
+      album: Object,
+      _src: {
+        type: String,
+        computed: '_imgSrc(key, album)',
+      },
+    },
+    _imgSrc: function(key, album) {
+      if (!key || !album) return '';
+      return album.thumbnail.s288[key];
+    },
+  });
+</script>

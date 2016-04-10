@@ -1,0 +1,61 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../syloc/syloc-photo.html">
+
+
+<dom-module id="syloc-group">
+  <template>
+    <style>
+      #container {
+        padding: 12px;
+        margin: 12px;
+      }
+      .title {
+        margin-bottom: 8px;
+        background-color: var(--tertiary-background-color);
+      }
+      .group {
+        display: flex;
+      }
+    </style>
+    <div id="container">
+      <div class="title">[[key]]</div>
+      <div class="group">
+        <template is="dom-repeat" items="[[_photos]]">
+          <syloc-photo key="[[item]]" value="[[_valueOfKey(item)]]" album="[[album]]"></syloc-photo>
+        </template>
+      </div>
+      <template is="dom-repeat" items="[[_groups]]">
+        <syloc-group key="[[item]]" value="[[_valueOfKey(item)]]" album="[[album]]"></syloc-group>
+      </template>
+	</div>
+  </template>
+</dom-module>
+
+<script>
+  /* global Polymer */
+  Polymer({
+    is: 'syloc-group',
+    properties: {
+      key: String,
+      album: Object,
+      value: {
+        type: Object,
+        observer: '_onValueChanged',
+      },
+      _groups: Array,
+      _photos: Array,
+    },
+    _onValueChanged: function() {
+      this.render();
+    },
+    _valueOfKey: function(key) {
+      return this.value[key];
+    },
+    render: function() {
+      var data = this.value;
+      this._groups = Object.keys(data).filter(key => data[key] instanceof Object);
+      this._photos = Object.keys(data).filter(key => typeof data[key] === 'string');
+    },
+  });
+</script>

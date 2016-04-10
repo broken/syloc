@@ -20,13 +20,14 @@
       .input-box {
         padding: 12px;
         border-radius: 16px;
+        background-color: var(--primary-background-color);
       }
     </style>
     <iron-a11y-keys target="[[a11yKeysTarget]]" keys="enter"
                     on-keys-pressed="onEnter"></iron-a11y-keys>
     <firebase-document location="[[firebaseUrl]]"
                        data="{{bgUrl}}"></firebase-document>
-    <section hero class="input-box">
+    <section class="input-box">
       <paper-input label="Key" id="input" value="{{key::input}}"></paper-input>
     </section>
   </template>

@@ -107,7 +107,7 @@
       var lcTitle = title.toLowerCase();
       var entry = null;
       for (var i=0; i < albumEntries.length; ++i) {
-        if (albumEntries[i].name.indexOf(lcTitle) > 0) {
+        if (albumEntries[i].name.indexOf(lcTitle) >= 0) {
           if (!!entry) return null;
           entry = albumEntries[i];
         }

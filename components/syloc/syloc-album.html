@@ -1,7 +1,9 @@
 <link href="../polymer/polymer.html" rel="import">
 
-<link href="../firebase-element/firebase-collection.html" rel="import">
+<link href="../firebase-element/firebase-document.html" rel="import">
 <link href="../iron-ajax/iron-ajax.html" rel="import">
+
+<link rel="import" href="../syloc/syloc-group.html">
 
 
 <dom-module id="syloc-album">
@@ -38,12 +40,9 @@
         width: 100%;
       }
     </style>
-    <firebase-collection location="https://syloc.firebaseio.com/album/[[key]]/thumbnail/s288" data="{{thumbnails}}"></firebase-collection>
-    <div class="grid">
-      <template is="dom-repeat" items="[[thumbnails]]" as="photo">
-        <div class="grid-item"><img src="[[photo.value]]"></div>
-      </template>
-    </div>
+    <firebase-document location="https://syloc.firebaseio.com/album/[[key]]" data="{{album}}"></firebase-document>
+    <firebase-document location="https://syloc.firebaseio.com/group/[[key]]" data="{{_groups}}"></firebase-document>
+    <syloc-group key="[[key]]" value="[[_groups]]" album="[[album]]"></syloc-group>
   </template>
 </dom-module>
 
@@ -52,8 +51,9 @@
   Polymer({
     is: 'syloc-album',
     properties: {
+      album: Object,
+      _groups: Object,
       key: String,
-      thumbnails: Array,
     },
   });
 </script>
