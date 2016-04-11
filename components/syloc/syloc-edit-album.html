@@ -50,6 +50,21 @@
   Polymer({
     is: 'syloc-edit-album',
     properties: {
+      albumKey: {
+        type: String,
+        notify: true,
+      },
+      key: {
+        type: String,
+        value: '__empty__',
+        computed: '_computeKeyFromAlbumKey(albumKey)',
+        readOnly: true,
+      },
+      authToken: {
+        type: String,
+        notify: true,
+        observer: '_authTokenChanged',
+      },
       _data: Object,
       _ref: {
         type: Object,
@@ -58,12 +73,20 @@
       _dragParent: Object,
       _newGroupName: String,
     },
+    _authTokenChanged: function() {
+      if (this._ref && this.key && !this._ref.getAuth()) this.$.firebase.login({ 'token': this.authToken });
+    },
     _refChanged: function() {
       if (!this._ref) return;
-      this.$.firebase.login();
+      this._ref.onAuth(
+          function(authData) {
+            if (authData) this.authToken = authData.token;
+          }.bind(this));
+      if (!this._ref || !this._ref.getAuth()) this.$.firebase.login({ 'token': this.authToken });
       this._ref.orderByChild('pos').once('value',
           function(data) {
-            this._data = data.val();
+            if (typeof data.val() === 'object') this._data = data.val();
+            else this._data = {};
           }.bind(this));
     },
     _allowDrop: function(e) {
@@ -111,7 +134,10 @@
       this.$.grp.render();
     },
     _navigateToAdminPage: function() {
-      window.location.href = this._adminPath;
+      this.albumKey = '';
+    },
+    _computeKeyFromAlbumKey: function(albumKey) {
+      return !!albumKey ? albumKey : '__empty__';
     },
   });
 </script>

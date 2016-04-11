@@ -38,7 +38,7 @@
       </paper-dialog-scrollable>
       <div class="buttons">
         <paper-button dialog-dismiss on-click="_clearValues">Cancel</paper-button>
-        <paper-button dialog-confirm on-click="_firebaseLogin" disabled="[[_isAlbumFound(title, albumEntries)]]">Accept</paper-button>
+        <paper-button dialog-confirm on-click="save" disabled="[[_isAlbumFound(title, albumEntries)]]">Accept</paper-button>
       </div>
     </div>
   </template>
@@ -60,31 +60,25 @@
         computed: '_parseAlbumsXml(albumsXml)',
       },
       _firebaseRef: Object,
+      authToken: {
+        type: String,
+        notify: true,
+        observer: '_authTokenChanged',
+      },
     },
-    ready: function() {
-      this._authCallback = this._authCallback.bind(this);
+    _authTokenChanged: function() {
+      if (this._ref && !this._ref.getAuth()) this.$.firebase.login({ 'token': this.authToken });
     },
     _clearValues: function() {
       this.key = '';
       this.title = '';
       this.albumsXml = '';
     },
-    _firebaseLogin: function() {
-      this._firebaseRef.onAuth(this._authCallback);
-      this.$.firebase.login();
-    },
-    _authCallback: function(authData) {
-      if (authData) {
-        var album = this._findAlbum(this.title, this.albumEntries);
-        this._firebaseRef.set(album.id);
-        this._firebaseRef.offAuth(this._authCallback);
-        this.$.firebase.logout();
-        this._clearValues();
-      }
-    },
-    _loginFailure: function(e) {
-      window.console.warn('Login to firebase failed.');
-      window.console.warn(e.detail);
+    save: function(e) {
+      var album = this._findAlbum(this.title, this.albumEntries);
+      this._firebaseRef.set(album.id);
+      this.$.firebase.logout();
+      this._clearValues();
     },
     _parseAlbumsXml: function(xml) {
       var albumEntries = [];

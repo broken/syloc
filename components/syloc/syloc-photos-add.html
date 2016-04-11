@@ -41,7 +41,7 @@
       </paper-dialog-scrollable>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm on-click="_firebaseLogin">Accept</paper-button>
+        <paper-button dialog-confirm on-click="save">Accept</paper-button>
       </div>
     </div>
   </template>
@@ -55,30 +55,29 @@
       Polymer.PaperDialogBehavior,
     ],
     properties: {
+      authToken: {
+        type: String,
+        notify: true,
+        observer: '_authTokenChanged',
+      },
       albumKey: String,
       albumId: String,
       _albumXml: String,
       _ref: Object,
       _refGroup: Object,
     },
-    ready: function() {
-      this._authCallback = this._authCallback.bind(this);
-    },
-    _firebaseLogin: function() {
-      this._ref.onAuth(this._authCallback);
-      this.$.firebase.login();
-    },
-    _authCallback: function(authData) {
-      if (authData) {
-        this.$.firebaseGroup.login({ 'token': authData.token });
-        var album = { 'photo': {}, 'thumbnail': { 's72': {}, 's144': {}, 's288': {} } };
-        this._parsePhotosXml(this._albumXml, album);
-        this._ref.set(album);
-        var groups = album.thumbnail.s72;
-        this._refGroup.set(groups);  // could there be a race condition here if we have not logged in on time from above?
-        this._ref.offAuth(this._authCallback);
-        this.$.firebase.logout();
+    _authTokenChanged: function() {
+      if (this._ref && !this._ref.getAuth()) {
+        this.$.firebase.login({ 'token': this.authToken });
+        this.$.firebaseGroup.login({ 'token': this.authToken });
       }
+    },
+    save: function(e) {
+      var album = { 'photo': {}, 'thumbnail': { 's72': {}, 's144': {}, 's288': {} } };
+      this._parsePhotosXml(this._albumXml, album);
+      this._ref.set(album);
+      var groups = album.thumbnail.s72;
+      this._refGroup.set(groups);
     },
     _parsePhotosXml: function(xml, album) {
       if (!xml) return;

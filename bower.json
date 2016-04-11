@@ -14,7 +14,8 @@
     "polymer": "Polymer/polymer#^1.4.0",
     "firebase-element": "GoogleWebComponents/firebase-element#^1.0.12",
     "iron-elements": "PolymerElements/iron-elements#^1.0.9",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.7"
+    "paper-elements": "PolymerElements/paper-elements#^1.0.7",
+    "carbon-route": "PolymerElements/carbon-route#^0.8.4"
   },
   "resolutions": {
     "firebase-element": "0b1f9b9508dc30389fdbf9d93205cd179761ff07"

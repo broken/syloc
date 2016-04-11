@@ -20,12 +20,9 @@ def main():
 def album(key=''):
   return template('views/album.html', key=key)
 
-@bottle.route('/master/a/<key>')
-def group(key=''):
-  return template('views/group.html', key=key)
-
 @bottle.route('/master')
-def admin():
+@bottle.route('/master/<filepath:path>')
+def admin(filepath=''):
   return static_file('admin.html', root='views')
 
 @bottle.route('/components/syloc/<filepath:path>')

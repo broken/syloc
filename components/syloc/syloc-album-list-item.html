@@ -41,8 +41,8 @@
     _toggleAddPhotosDialog: function(e, detail, sender) {
       this.$.addPhotosDialog.toggle();
     },
-    _navigateToEditAlbum: function() {
-      window.location.href = this._editAlbumPath + this.key;
+    _navigateToEditAlbum: function(e) {
+      this.fire('editalbum', this.key);
     },
   });
 </script>

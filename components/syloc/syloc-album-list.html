@@ -39,7 +39,7 @@
       </template>
       <paper-fab icon="add" on-click="_toggleAddAlbumDialog"></paper-fab>
     </div>
-    <syloc-album-add id="addAlbumDialog"></syloc-album-add>
+    <syloc-album-add id="addAlbumDialog" auth-token="{{authToken}}"></syloc-album-add>
   </template>
 </dom-module>
 
@@ -48,6 +48,10 @@
   Polymer({
     is: 'syloc-album-list',
     properties: {
+      authToken: {
+        type: String,
+        notify: true,
+      },
       albums: Array,
       _emptyToken: String,
     },

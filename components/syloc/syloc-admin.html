@@ -1,11 +1,36 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../carbon-route/carbon-location.html">
+<link rel="import" href="../carbon-route/carbon-route.html">
+<link rel="import" href="../firebase-element/firebase-auth.html">
+<link rel="import" href="../neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="../neon-animation/animations/slide-right-animation.html">
+<link rel="import" href="../neon-animation/neon-animatable.html">
+<link rel="import" href="../neon-animation/neon-animated-pages.html">
+
 <link rel="import" href="../syloc/syloc-album-list.html">
+<link rel="import" href="../syloc/syloc-edit-album.html">
 
 
 <dom-module id="syloc-admin">
   <template>
-    <syloc-album-list></syloc-album-list>
+    <carbon-location route="{{route}}"></carbon-location>
+    <carbon-route
+        route="{{route}}"
+        pattern="/master/:albumKey"
+        data="{{data}}"></carbon-route>
+    <firebase-auth
+        id="firebase"
+        location="[[firebaseLocation]]"
+        provider="google"
+        ref="{{_ref}}"></firebase-auth>
+    <neon-animated-pages
+        selected="[[hasAlbumRoute(data.albumKey)]]"
+        attr-for-selected="hasAlbumRoute"
+        entry-animation="slide-from-left-animation"
+        exit-animation="slide-right-animation">
+    <neon-animatable hasAlbumRoute="false"><syloc-album-list auth-token="{{authToken}}" on-editalbum="_navEditAlbum"></syloc-album-list></neon-animatable>
+    <neon-animatable hasAlbumRoute="true"><syloc-edit-album album-key="{{data.albumKey}}" auth-token="{{authToken}}"></syloc-edit-album></neon-animatable>
   </template>
 </dom-module>
 
@@ -14,6 +39,23 @@
   Polymer({
     is: 'syloc-admin',
     properties: {
+      data: Object,
+      firebaseLocation: {
+        type: String,
+        computed: '_computeFirebaseLocation(data)',
+      },
+      authToken: String,
+    },
+    hasAlbumRoute: function(key) {
+      return '' + !!key;
+    },
+    _computeFirebaseLocation: function(data) {
+      var domain = 'https://syloc.firebaseio.com/'
+      if (!!data && !!data.albumKey) return domain + '/group/' + data.albumKey;
+      return domain + 'album';
+    },
+    _navEditAlbum: function(e, detail, sender) {
+      this.set('data.albumKey', detail);
     },
   });
 </script>
