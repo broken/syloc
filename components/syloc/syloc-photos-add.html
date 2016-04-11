@@ -77,7 +77,13 @@
       this._parsePhotosXml(this._albumXml, album);
       this._ref.set(album);
       var groups = album.thumbnail.s72;
-      this._refGroup.set(groups);
+      this._refGroup.once('value',
+          function(data) {
+            data = data.val();
+            this._filterOutDuplicates(groups, data);
+            data = this._appendPhotos(groups, data);
+            this._refGroup.set(data);
+          }.bind(this));
     },
     _parsePhotosXml: function(xml, album) {
       if (!xml) return;
@@ -100,6 +106,21 @@
           album.thumbnail[width][name] = thumb.getAttribute('url');
         }
       }
+    },
+    _filterOutDuplicates: function(photos, groups) {
+      for (var key in groups) {
+        if (!groups.hasOwnProperty(key)) continue;
+        if (typeof groups[key] === 'object') photos = this._filterOutDuplicates(photos, groups[key]);
+        else delete photos[key];
+      }
+      return photos;
+    },
+    _appendPhotos: function(photos, groups) {
+      for (var key in photos) {
+        if (!photos.hasOwnProperty(key)) continue;
+        groups[key] = photos[key];
+      }
+      return groups;
     },
   });
 </script>

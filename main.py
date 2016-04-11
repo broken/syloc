@@ -21,6 +21,7 @@ def album(key=''):
   return template('views/album.html', key=key)
 
 @bottle.route('/master')
+@bottle.route('/master/')
 @bottle.route('/master/<filepath:path>')
 def admin(filepath=''):
   return static_file('admin.html', root='views')
