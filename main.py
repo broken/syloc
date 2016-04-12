@@ -1,3 +1,4 @@
+import admins
 import json
 import logging
 from bottle import Bottle
@@ -24,7 +25,7 @@ def album(key=''):
 @bottle.route('/master/')
 @bottle.route('/master/<filepath:path>')
 def admin(filepath=''):
-  return static_file('admin.html', root='views')
+  return template('views/admin.html', admins=json.dumps(admins.USERS))
 
 @bottle.route('/components/syloc/<filepath:path>')
 def syloc(filepath):

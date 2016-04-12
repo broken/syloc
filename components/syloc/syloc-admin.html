@@ -3,11 +3,16 @@
 <link rel="import" href="../carbon-route/carbon-location.html">
 <link rel="import" href="../carbon-route/carbon-route.html">
 <link rel="import" href="../firebase-element/firebase-auth.html">
+<link rel="import" href="../iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../neon-animation/animations/slide-from-left-animation.html">
 <link rel="import" href="../neon-animation/animations/slide-right-animation.html">
 <link rel="import" href="../neon-animation/neon-animatable.html">
 <link rel="import" href="../neon-animation/neon-animated-pages.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
 
+<link rel="import" href="../syloc/global-behavior.html">
 <link rel="import" href="../syloc/syloc-album-list.html">
 <link rel="import" href="../syloc/syloc-edit-album.html">
 
@@ -24,13 +29,22 @@
         location="[[firebaseLocation]]"
         provider="google"
         ref="{{_ref}}"></firebase-auth>
+    <iron-localstorage name="admin" value="{{adminName}}"></iron-localstorage>
+    <paper-dropdown-menu label="Admin">
+      <paper-menu class="dropdown-content" selected="{{adminName}}" attr-for-selected="label">
+        <template is="dom-repeat" items="[[keys(admins)]]" as="admin">
+          <paper-item label="[[admin]]">[[admin]]</paper-item>
+        </template>
+      </paper-menu>
+    </paper-dropdown-menu>
     <neon-animated-pages
         selected="[[hasAlbumRoute(data.albumKey)]]"
         attr-for-selected="hasAlbumRoute"
         entry-animation="slide-from-left-animation"
         exit-animation="slide-right-animation">
-    <neon-animatable hasAlbumRoute="false"><syloc-album-list auth-token="{{authToken}}" on-editalbum="_navEditAlbum"></syloc-album-list></neon-animatable>
-    <neon-animatable hasAlbumRoute="true"><syloc-edit-album album-key="{{data.albumKey}}" auth-token="{{authToken}}"></syloc-edit-album></neon-animatable>
+      <neon-animatable hasAlbumRoute="false"><syloc-album-list auth-token="{{authToken}}" on-editalbum="_navEditAlbum"></syloc-album-list></neon-animatable>
+      <neon-animatable hasAlbumRoute="true"><syloc-edit-album album-key="{{data.albumKey}}" auth-token="{{authToken}}"></syloc-edit-album></neon-animatable>
+    </neon-animated-pages>
   </template>
 </dom-module>
 
@@ -38,7 +52,15 @@
   /* global Polymer */
   Polymer({
     is: 'syloc-admin',
+    behaviors: [
+      GlobalBehavior,  /* global GlobalBehavior */
+    ],
     properties: {
+      admins: Object,
+      adminName: {
+        type: String,
+        observer: '_adminNameChanged',
+      },
       data: Object,
       firebaseLocation: {
         type: String,
@@ -56,6 +78,12 @@
     },
     _navEditAlbum: function(e, detail, sender) {
       this.set('data.albumKey', detail);
+    },
+    keys: function(obj) {
+      return Object.keys(obj);
+    },
+    _adminNameChanged: function() {
+      this.set('global.adminId', this.admins[this.adminName]);
     },
   });
 </script>

@@ -36,6 +36,15 @@
     <script src="/components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link href="/components/syloc/syloc-theme.html" rel="import">
     <link href="/components/syloc/syloc-admin.html" rel="import">
-    <syloc-admin></syloc-admin>
+    <template is="dom-bind">
+      <syloc-admin id="admin"></syloc-admin>
+    </template>
+    <script>
+      var scope = document.querySelector('template[is="dom-bind"]');
+      scope.addEventListener('dom-change',
+          function() {
+            scope.$.admin.admins = JSON.parse('${admins}');
+          });
+    </script>
   </body>
 </html>
