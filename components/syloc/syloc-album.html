@@ -1,7 +1,9 @@
-<link href="../polymer/polymer.html" rel="import">
+<link rel="import" href="../polymer/polymer.html">
 
-<link href="../firebase-element/firebase-document.html" rel="import">
-<link href="../iron-ajax/iron-ajax.html" rel="import">
+<link rel="import" href="../carbon-route/carbon-location.html">
+<link rel="import" href="../carbon-route/carbon-route.html">
+<link rel="import" href="../firebase-element/firebase-document.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <link rel="import" href="../syloc/syloc-group.html">
 
@@ -40,9 +42,12 @@
         width: 100%;
       }
     </style>
-    <firebase-document location="https://syloc.firebaseio.com/album/[[key]]" data="{{album}}"></firebase-document>
-    <firebase-document location="https://syloc.firebaseio.com/group/[[key]]" data="{{_groups}}"></firebase-document>
-    <syloc-group key="[[key]]" value="[[_groups]]" album="[[album]]"></syloc-group>
+    <carbon-location route="{{route}}"></carbon-location>
+    <carbon-route route="{{route}}" pattern="/a/:key" data="{{albumData}}" tail="{{albumRouteTail}}"></carbon-route>
+    <carbon-route route="{{albumRouteTail}}" pattern="/g/:key" data="{{groupData}}" tail="{{groupRouteTail}}" active="{{hasGroupRoute}}"></carbon-route>
+    <firebase-document location="https://syloc.firebaseio.com/album/[[albumData.key]]" data="{{album}}"></firebase-document>
+    <firebase-document location="https://syloc.firebaseio.com/group/[[albumData.key]]" data="{{groups}}"></firebase-document>
+    <syloc-group key="[[selectedGroupKey]]" value="[[selectedGroup]]" album="[[album]]" route="{{photoRoute}}"></syloc-group>
   </template>
 </dom-module>
 
@@ -52,8 +57,54 @@
     is: 'syloc-album',
     properties: {
       album: Object,
-      _groups: Object,
-      key: String,
+      selectedGroupKey: String,
+      selectedGroup: Object,
+      groups: {
+        type: Object,
+        observer: 'groupsChanged',
+      },
+      photoRoute: Object,
+      hasGroupRoute: {
+        type: Boolean,
+        observer: 'hasGroupRouteChanged',
+      },
+    },
+    observers: [
+      'updateSelectedGroup(groupData.key, groups)',
+      'photoRouteChanged(photoRoute.path)',
+    ],
+    updateSelectedGroup: function(groupKey, groups) {
+      if (!groups) return;
+      // we can assume that server routing should give us an album key
+      if (this.hasGroupRoute) {
+        for (var field in groups) {
+          if (!groups.hasOwnProperty(field)) continue;
+          if (this.groupData.key === field) {
+            this.selectedGroup = this.groups[field];
+            this.selectedGroupKey = field;
+            return;
+          }
+        }
+      }
+      this.selectedGroup = this.groups;
+      this.selectedGroupKey = this.albumData.key;
+    },
+    groupsChanged: function() {
+      // this is required because multiproperty observers are not called until
+      // all properties are defined. However, if we get data back about all the
+      // groups, we should expect the group key to be defined if it will be by
+      // this point.
+      // https://github.com/Polymer/docs/issues/1419#issuecomment-157227314
+      if (!this.groupData.key) this.updateSelectedGroup(undefined, this.groups);
+    },
+    photoRouteChanged: function() {
+      // because the group route does not pass up the change if it is inactive,
+      // we need to either use it or the album tail for the photo tail.
+      if (this.hasGroupRoute) this.set('groupRouteTail.path', this.photoRoute.path);
+      else this.set('albumRouteTail.path', this.photoRoute.path);
+    },
+    hasGroupRouteChanged: function() {
+      this.photoRoute = this.hasGroupRoute ? this.groupRouteTail : this.albumRouteTail;
     },
   });
 </script>

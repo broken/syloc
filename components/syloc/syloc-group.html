@@ -22,11 +22,11 @@
       <div class="title">[[key]]</div>
       <div class="group">
         <template is="dom-repeat" items="[[_photos]]">
-          <syloc-photo key="[[item]]" value="[[_valueOfKey(item)]]" album="[[album]]"></syloc-photo>
+          <syloc-photo key="[[item]]" value="[[_valueOfKey(item)]]" album="[[album]]" route="{{route}}"></syloc-photo>
         </template>
       </div>
       <template is="dom-repeat" items="[[_groups]]">
-        <syloc-group key="[[item]]" value="[[_valueOfKey(item)]]" album="[[album]]"></syloc-group>
+        <syloc-group key="[[item]]" value="[[_valueOfKey(item)]]" album="[[album]]" route="{{route}}"></syloc-group>
       </template>
 	</div>
   </template>
@@ -45,6 +45,10 @@
       },
       _groups: Array,
       _photos: Array,
+      route: {
+        type: Object,
+        notify: true,
+      },
     },
     _onValueChanged: function() {
       this.render();

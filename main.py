@@ -17,9 +17,9 @@ bottle = Bottle()
 def main():
   return static_file('main.html', root='views')
 
-@bottle.route('/a/<key>')
-def album(key=''):
-  return template('views/album.html', key=key)
+@bottle.route('/a/<filepath:path>')
+def album(filepath=''):
+  return static_file('album.html', root='views')
 
 @bottle.route('/master')
 @bottle.route('/master/')

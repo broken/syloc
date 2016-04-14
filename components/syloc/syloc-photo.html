@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../carbon-route/carbon-route.html">
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
@@ -20,7 +21,7 @@
       }
       #photoContainer {
         position: absolute;
-        display: none;
+        display: flex;
         top: 0;
         right: 0;
         bottom: 0;
@@ -28,9 +29,13 @@
         background-color: black;
         align-items: center;
       }
+      div#photoContainer[hidden] {
+        display: none;
+      }
     </style>
+    <carbon-route route="{{route}}" pattern="/p/[[key]]" active="{{hasPhotoRoute}}"></carbon-route>
     <div on-tap="show" id="tnContainer"><img src="[[_tnSrc]]" id="tnImg"/></div>
-    <div on-tap="hide" id="photoContainer"><img src="[[_photoSrc]]" id="photoImg"/></div>
+    <div on-tap="hide" id="photoContainer" hidden$="[[!hasPhotoRoute]]"><img src="[[_photoSrc]]" id="photoImg"/></div>
   </template>
 </dom-module>
 
@@ -42,7 +47,6 @@
       Polymer.NeonAnimationRunnerBehavior
     ],
     listeners: {
-      'click': '_onClick',
       'neon-animation-finish': '_neonAnimationFinish',
     },
     properties: {
@@ -56,6 +60,10 @@
       _photoSrc: {
         type: String,
         computed: '_computePhotoSrc(key, album)',
+      },
+      route: {
+        type: Object,
+        notify: true,
       },
       opened: Boolean,
       animationConfig: {
@@ -89,7 +97,7 @@
     },
     show: function() {
       this.opened = true;
-      this.$.photoContainer.style.display = 'flex';
+      this.set('route.path', '/p/' + this.key);
       this.cancelAnimation();
       this.playAnimation('open');
     },
@@ -99,7 +107,7 @@
       this.playAnimation('close');
     },
     _neonAnimationFinish: function() {
-      if (!this.opened) this.$.photoContainer.style.display = 'none';
+      if (!this.opened) this.set('route.path', '');
     },
   });
 </script>
