@@ -107,11 +107,14 @@
         }
       }
     },
+    // removes from photos those that are already in the groups, and removes
+    // from the groups those photos which no longer exist.
     _filterOutDuplicates: function(photos, groups) {
       for (var key in groups) {
         if (!groups.hasOwnProperty(key)) continue;
         if (typeof groups[key] === 'object') photos = this._filterOutDuplicates(photos, groups[key]);
-        else delete photos[key];
+        else if (photos[key]) delete photos[key];
+        else delete groups[key];
       }
       return photos;
     },
