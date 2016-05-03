@@ -47,7 +47,7 @@
     <carbon-route route="{{albumRouteTail}}" pattern="/g/:key" data="{{groupData}}" tail="{{groupRouteTail}}" active="{{hasGroupRoute}}"></carbon-route>
     <firebase-document location="https://syloc.firebaseio.com/album/[[albumData.key]]" data="{{album}}"></firebase-document>
     <firebase-document location="https://syloc.firebaseio.com/group/[[albumData.key]]" data="{{groups}}"></firebase-document>
-    <syloc-group key="[[selectedGroupKey]]" value="[[selectedGroup]]" album="[[album]]" route="{{photoRoute}}"></syloc-group>
+    <syloc-group key="[[selectedGroupKey]]" value="[[selectedGroup]]" album="[[album]]" album-key="[[albumData.key]]" route="{{photoRoute}}"></syloc-group>
   </template>
 </dom-module>
 
